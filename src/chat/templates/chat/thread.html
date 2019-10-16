@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>Thread for {% if user != object.first %}{{ object.first }}{% else %}{{ object.second }}{% endif %}</h3>
+<ul id='chat-items'>
+{% for chat in object.chatmessage_set.all %}
+
+<li>{{ chat.message }} via {{ chat.user }}</li>
+
+{% endfor %}
+</ul>
+
+<form id='form' method='POST'> {% csrf_token %}
+{{form.as_p }}
+<input type='submit' class='btn btn-primary'/>
+</form>
+
+{% endblock %}
+
+{% block script %}
+
+<script>
+console.log(window.location)
+
+    var socket_url = 'ws://' + window.location.host + window.location.pathname
+    console.log(socket_url)
+
+    var socket = new WebSocket(socket_url)
+
+    socket.onmessage = function(event){
+        console.log(event)
+    }
+
+    socket.onopen = function(event){
+        console.log('socket opened', event)
+    }
+
+    socket.onclose = function(event){
+        console.log('socket closed', event)
+    }
+
+</script>
+{% endblock %}
